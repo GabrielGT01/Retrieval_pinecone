@@ -82,11 +82,9 @@ def create_embeddings_vectorstore(chunked_data):
 
 # Function to delete Pinecone index
 def delete_pinecone_index(index_name='project'):
-    pinecone.init(
-        api_key=PINECONE_API_KEY,
-        environment='gcp-starter')
+    os.environ['PINECONE_API_KEY'] = PINECONE_API_KEY
+    import pinecone
     pc = pinecone.Pinecone()
-    
     if index_name == 'all':
         indexes = pc.list_indexes().names()
         
@@ -139,7 +137,7 @@ if __name__ == "__main__":
                     file_name = os.path.join('./', uploaded_file.name)
                     with open(file_name, 'wb') as f:
                         f.write(bytes_data)
-                    #delete_pinecone_index(index_name='project')
+                    delete_pinecone_index(index_name='project')
                     data = load_documents(file_name)
                     chunked_data = chunk_data(data, chunk_size=1000)
                     vector_store = create_embeddings_vectorstore(chunked_data)
