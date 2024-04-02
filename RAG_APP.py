@@ -2,6 +2,7 @@ import os
 import streamlit as st
 import pinecone
 from langchain.prompts import ChatPromptTemplate
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import PyPDFLoader, TextLoader, Docx2txtLoader
 from langchain_community.document_loaders import WebBaseLoader
