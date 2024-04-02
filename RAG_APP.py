@@ -56,15 +56,15 @@ def chunk_data(data, chunk_size=1000):
 # Function to create embeddings vector store
 def create_embeddings_vectorstore(chunked_data):
     # importing the necessary libraries and initializing the Pinecone client
-    embeddings = OpenAIEmbeddings(model='text-embedding-3-small', dimensions=1536)
-    pinecone.init(
-        api_key=PINECONE_API_KEY,
-        environment= 'gcp-starter')
     
-    index_name = "project"
-    pc = pinecone.Pinecone()
     embeddings = OpenAIEmbeddings(model='text-embedding-3-small', dimensions=1536)
-   
+
+    import os
+    from pinecone import Pinecone, PodSpec
+    pc = Pinecone(
+        api_key=os.environ.get("PINECONE_API_KEY")
+    )
+    index_name = "project"
     if index_name in pc.list_indexes().names():
         vector_store = Pinecone.from_existing_index(index_name, embeddings)
     else:
