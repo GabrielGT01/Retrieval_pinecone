@@ -1,0 +1,6 @@
+streamlit
+langchain
+langchain-text-splitters
+langchain_openai
+pinecone-client==3.1.0
+docx2txt
