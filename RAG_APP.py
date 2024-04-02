@@ -78,7 +78,7 @@ def create_embeddings_vectorstore(chunked_data):
             )
         )
         vector_store = Pinecone.from_documents(chunked_data, embeddings, index_name=index_name)
-     return vector_store
+    return vector_store
 
 # Function to delete Pinecone index
 def delete_pinecone_index(index_name='project'):
