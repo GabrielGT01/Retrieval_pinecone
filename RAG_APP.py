@@ -20,11 +20,6 @@ os.environ['PINECONE_API_KEY'] = PINECONE_API
 os.environ['OPENAI_API_KEY'] = OPENAI_API
 os.environ["api_key"] = api
 
-
-os.environ['OPENAI_API_KEY'] ="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"
-os.environ["api_key"] = "3d06ba60-cfdc-45e6-9ce3-fc6445708f2d"
-os.environ["PINECONE_API_KEY"] = "3d06ba60-cfdc-45e6-9ce3-fc6445708f2d"
-
 llm = ChatOpenAI()
 
 # Function to load documents
