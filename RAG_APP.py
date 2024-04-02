@@ -171,7 +171,16 @@ if __name__ == "__main__":
                     vector_store = create_embeddings_vectorstore(chunked_data)
                     st.session_state.vs = vector_store
                     st.success('Text from the site has been scraped and can now be queried.')
+            st.divider()
+            question = st.text_input('Ask a question about the content of your file:')
+            
+            if question:
+                
+                if 'vs' in st.session_state:
+                    vector_store = st.session_state.vs
+                    answer = questions_answer(question, vector_store)
+                    st.text_area('Context Answer:', value=answer)
 
-    st.divider()
+            
 
 
