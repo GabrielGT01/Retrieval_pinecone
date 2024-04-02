@@ -82,6 +82,7 @@ def create_embeddings_vectorstore(chunked_data):
 def delete_pinecone_index(index_name='project'):
     os.environ["PINECONE_API_KEY"] = "3d06ba60-cfdc-45e6-9ce3-fc6445708f2d"
     import pinecone
+    from langchain_community.vectorstores import Pinecone
     pc = pinecone.Pinecone()
     
     if index_name == 'all':
