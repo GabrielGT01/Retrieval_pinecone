@@ -1,22 +1,24 @@
 import os
 import streamlit as st
-from pinecone import Pinecone
+import pinecone
 from langchain.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import PyPDFLoader, TextLoader, Docx2txtLoader
 from langchain_community.document_loaders import WebBaseLoader
+from langchain_community.vectorstores import Pinecone
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.output_parser import StrOutputParser
 from langchain.retrievers.multi_query import MultiQueryRetriever
 from langchain_openai import OpenAIEmbeddings
+from pinecone import PodSpec
 
 # Set environment variables
 
 OPENAI_API =st.secrets['OPENAI_API_KEY']
 api = st.secrets['api_key'] 
-PINECONE_API = st.secrets['PINECONE_API_KEY'] 
+PINECONE_API_KEY = st.secrets['PINECONE_API_KEY'] 
 
-os.environ['PINECONE_API_KEY'] = PINECONE_API
+os.environ['PINECONE_API_KEY'] = PINECONE_API_KEY
 os.environ['OPENAI_API_KEY'] = OPENAI_API
 os.environ["api_key"] = api
 
@@ -53,11 +55,10 @@ def chunk_data(data, chunk_size=1000):
 # Function to create embeddings vector store
 def create_embeddings_vectorstore(chunked_data):
     # importing the necessary libraries and initializing the Pinecone client
-    import pinecone
-    from langchain_community.vectorstores import Pinecone
-    from langchain_openai import OpenAIEmbeddings
-    from pinecone import PodSpec
-    os.environ["PINECONE_API_KEY"] = "3d06ba60-cfdc-45e6-9ce3-fc6445708f2d"
+    embeddings = OpenAIEmbeddings(model='text-embedding-3-small', dimensions=1536)
+    pinecone.init(
+        api_key=PINECONE_API_KEY,
+        environment= 'gcp-starter')
     
     index_name = "project"
     pc = pinecone.Pinecone()
@@ -80,9 +81,9 @@ def create_embeddings_vectorstore(chunked_data):
 
 # Function to delete Pinecone index
 def delete_pinecone_index(index_name='project'):
-    os.environ["PINECONE_API_KEY"] = "3d06ba60-cfdc-45e6-9ce3-fc6445708f2d"
-    import pinecone
-    from langchain_community.vectorstores import Pinecone
+    pinecone.init(
+        api_key=PINECONE_API_KEY,
+        environment='gcp-starter')
     pc = pinecone.Pinecone()
     
     if index_name == 'all':
@@ -137,7 +138,7 @@ if __name__ == "__main__":
                     file_name = os.path.join('./', uploaded_file.name)
                     with open(file_name, 'wb') as f:
                         f.write(bytes_data)
-                    delete_pinecone_index(index_name='project')
+                    #delete_pinecone_index(index_name='project')
                     data = load_documents(file_name)
                     chunked_data = chunk_data(data, chunk_size=1000)
                     vector_store = create_embeddings_vectorstore(chunked_data)
