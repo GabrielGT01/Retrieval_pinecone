@@ -66,7 +66,7 @@ def create_embeddings_vectorstore(chunked_data):
     )
     index_name = "project"
     if index_name in pc.list_indexes().names():
-        vector_store = Pinecone.from_existing_index(index_name, embeddings)
+        vector_store = pc.from_existing_index(index_name, embeddings)
     else:
         # creating a new index
         pc.create_index(
@@ -77,7 +77,7 @@ def create_embeddings_vectorstore(chunked_data):
                 environment='gcp-starter'
             )
         )
-        vector_store = Pinecone.from_documents(chunked_data, embeddings, index_name=index_name)
+        vector_store = pc.from_documents(chunked_data, embeddings, index_name=index_name)
     return vector_store
 
 # Function to delete Pinecone index
