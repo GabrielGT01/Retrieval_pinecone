@@ -1,12 +1,10 @@
 import os
 import streamlit as st
-import pinecone
 from langchain.prompts import ChatPromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import PyPDFLoader, TextLoader, Docx2txtLoader
 from langchain_community.document_loaders import WebBaseLoader
-from langchain_community.vectorstores import Pinecone
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.output_parser import StrOutputParser
 from langchain.retrievers.multi_query import MultiQueryRetriever
@@ -60,16 +58,16 @@ def create_embeddings_vectorstore(chunked_data):
     embeddings = OpenAIEmbeddings(model='text-embedding-3-small', dimensions=1536)
 
     import os
+    import pinecone 
     from pinecone import Pinecone, PodSpec
-    pc = Pinecone(
-        api_key=os.environ.get("PINECONE_API_KEY")
-    )
+    from langchain_community.vectorstores import Pinecone
+    Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
     index_name = "project"
-    if index_name in pc.list_indexes().names():
-        vector_store = pinecone.from_existing_index(index_name, embeddings)
+    if index_name in Pinecone.list_indexes().names():
+        vector_store = Pinecone.from_existing_index(index_name, embeddings)
     else:
         # creating a new index
-        pc.create_index(
+        Pinecone.create_index(
             name=index_name,
             dimension=1536,
             metric='cosine',
@@ -77,7 +75,7 @@ def create_embeddings_vectorstore(chunked_data):
                 environment='gcp-starter'
             )
         )
-        vector_store = pc.from_documents(chunked_data, embeddings, index_name=index_name)
+        vector_store = Pinecone.from_documents(chunked_data, embeddings, index_name=index_name)
     return vector_store
 
 # Function to delete Pinecone index
