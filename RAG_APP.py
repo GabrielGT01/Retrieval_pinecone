@@ -9,7 +9,10 @@ from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.output_parser import StrOutputParser
 from langchain.retrievers.multi_query import MultiQueryRetriever
 from langchain_openai import OpenAIEmbeddings
-from pinecone import PodSpec
+import pinecone 
+from pinecone import Pinecone,PodSpec
+
+
 
 # Set environment variables
 
@@ -22,7 +25,7 @@ os.environ['OPENAI_API_KEY'] = OPENAI_API
 os.environ["api_key"] = api
 
 llm = ChatOpenAI()
-
+pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 # Function to load documents
 def load_documents(file):
     name, extension = os.path.splitext(file)
@@ -56,20 +59,15 @@ def create_embeddings_vectorstore(chunked_data):
     # importing the necessary libraries and initializing the Pinecone client
     
     embeddings = OpenAIEmbeddings(model='text-embedding-3-small', dimensions=1536)
-    import os
-    import pinecone 
-     from pinecone import Pinecone, PodSpec
-    Pinecone(
-        api_key=os.environ.get("PINECONE_API_KEY")
 
     from langchain_community.vectorstores import Pinecone
    
     index_name = "project"
-    if index_name in Pinecone.list_indexes().names():
+    if index_name in pc.list_indexes().names():
         vector_store = Pinecone.from_existing_index(index_name, embeddings)
     else:
         # creating a new index
-        Pinecone.create_index(
+        pc.create_index(
             name=index_name,
             dimension=1536,
             metric='cosine',
