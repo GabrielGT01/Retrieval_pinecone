@@ -144,6 +144,20 @@ if __name__ == "__main__":
                     st.session_state.vs = vector_store
                     st.success('File is uploaded and can now be queried.')
 
+            st.divider()
+            question = st.text_input('Ask a question about the content of your file:')
+            
+            if question:
+                
+                if 'vs' in st.session_state:
+                    vector_store = st.session_state.vs
+                    answer = questions_answer(question, vector_store)
+                    st.text_area('Context Answer:', value=answer)
+
+            
+
+    
+
     # Web data input section
     elif option == "Web Data":
         address = st.text_input('Please input the web address:')
@@ -160,10 +174,4 @@ if __name__ == "__main__":
 
     st.divider()
 
-    # Text input for user's question
-    question = st.text_input('Ask a question about the content of your file:')
-    if question:
-        if 'vs' in st.session_state:
-            vector_store = st.session_state.vs
-            answer = questions_answer(question, vector_store)
-            st.text_area('Context Answer:', value=answer)
+
